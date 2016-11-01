@@ -1,4 +1,5 @@
 import Foundation
+import PromiseKit
 
 public enum Encoding {
     /// Decode as JSON

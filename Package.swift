@@ -10,5 +10,6 @@ let package = Package(
         "Sources/NSTask+AnyPromise.m",
         "Sources/NSURLSession+AnyPromise.m",
         "Sources/PMKFoundation.h",
+		"Tests"  // currently SwiftPM is not savvy to having a single test…
     ]
 )
