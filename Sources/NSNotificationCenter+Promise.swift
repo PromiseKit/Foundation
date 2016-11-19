@@ -23,7 +23,7 @@ extension NotificationCenter {
     public func observe(once name: Notification.Name, object: Any? = nil) -> NotificationPromise {
         let (promise, fulfill) = NotificationPromise.go()
         let id = addObserver(forName: name, object: object, queue: nil, using: fulfill)
-        promise.always { self.removeObserver(id) }
+        _ = promise.always { self.removeObserver(id) }
         return promise
     }
 }
