@@ -1,5 +1,7 @@
 import Foundation
+#if !COCOAPODS
 import PromiseKit
+#endif
 
 public enum Encoding {
     /// Decode as JSON
