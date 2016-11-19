@@ -14,10 +14,10 @@ class NSNotificationCenterTests: XCTestCase {
             ex.fulfill()
         }
 
-        NotificationCenter.default.post(name: Notification.Name(rawValue: PMKTestNotification), object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: PMKTestNotification, object: nil, userInfo: userInfo)
 
         waitForExpectations(timeout: 1, handler: nil)
     }
 }
 
-private let PMKTestNotification = "PMKTestNotification"
+private let PMKTestNotification = Notification.Name("PMKTestNotification")
