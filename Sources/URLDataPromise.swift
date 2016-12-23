@@ -75,7 +75,7 @@ public class URLDataPromise: Promise<Data> {
 
             if let error = error {
                 reject(error)
-            } else if let data = data, let rsp = rsp as? HTTPURLResponse, rsp.statusCode >= 200, rsp.statusCode < 300 {
+            } else if let data = data, let rsp = rsp as? HTTPURLResponse, (200..<300) ~= rsp.statusCode {
                 fulfill(data)
             } else if let data = data, !(rsp is HTTPURLResponse) {
                 fulfill(data)
