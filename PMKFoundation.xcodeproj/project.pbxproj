@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6352FDE31D69130200680F48 /* URLDataPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6352FDE21D69130200680F48 /* URLDataPromise.swift */; };
 		6364F66F1D68B8DF008D7B94 /* NSNotificationCenter+AnyPromise.h in Headers */ = {isa = PBXBuildFile; fileRef = 6364F66C1D68B8DF008D7B94 /* NSNotificationCenter+AnyPromise.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6364F6701D68B8DF008D7B94 /* NSTask+AnyPromise.h in Headers */ = {isa = PBXBuildFile; fileRef = 6364F66D1D68B8DF008D7B94 /* NSTask+AnyPromise.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6364F6711D68B8DF008D7B94 /* NSURLSession+AnyPromise.h in Headers */ = {isa = PBXBuildFile; fileRef = 6364F66E1D68B8DF008D7B94 /* NSURLSession+AnyPromise.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -39,7 +38,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6352FDE21D69130200680F48 /* URLDataPromise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLDataPromise.swift; path = Sources/URLDataPromise.swift; sourceTree = SOURCE_ROOT; };
 		6364F66C1D68B8DF008D7B94 /* NSNotificationCenter+AnyPromise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSNotificationCenter+AnyPromise.h"; path = "Sources/NSNotificationCenter+AnyPromise.h"; sourceTree = SOURCE_ROOT; };
 		6364F66D1D68B8DF008D7B94 /* NSTask+AnyPromise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSTask+AnyPromise.h"; path = "Sources/NSTask+AnyPromise.h"; sourceTree = SOURCE_ROOT; };
 		6364F66E1D68B8DF008D7B94 /* NSURLSession+AnyPromise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURLSession+AnyPromise.h"; path = "Sources/NSURLSession+AnyPromise.h"; sourceTree = SOURCE_ROOT; };
@@ -121,7 +119,6 @@
 				63C7FFDA1D5C00F2003BAE60 /* NSURLSession+AnyPromise.m */,
 				63C7FFDB1D5C00F2003BAE60 /* NSURLSession+Promise.swift */,
 				63C7FFEB1D5C00FD003BAE60 /* PMKFoundation.h */,
-				6352FDE21D69130200680F48 /* URLDataPromise.swift */,
 			);
 			path = Sources;
 			sourceTree = SOURCE_ROOT;
@@ -254,7 +251,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6352FDE31D69130200680F48 /* URLDataPromise.swift in Sources */,
 				63C7FFDF1D5C00F2003BAE60 /* NSNotificationCenter+Promise.swift in Sources */,
 				63C7FFDC1D5C00F2003BAE60 /* afterlife.swift in Sources */,
 				63C7FFDE1D5C00F2003BAE60 /* NSNotificationCenter+AnyPromise.m in Sources */,

@@ -8,15 +8,15 @@ class NSObjectTests: XCTestCase {
         let ex = expectation(description: "")
 
         let foo = Foo()
-        foo.observe(keyPath: "bar").then { (newValue: String) -> Void in
-            XCTAssertEqual(newValue, "moo")
+        foo.observe(.promise, keyPath: "bar").done { newValue in
+            XCTAssertEqual(newValue as? String, "moo")
             ex.fulfill()
         }.catch { _ in
             XCTFail()
         }
         foo.bar = "moo"
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
     }
 
     func testAfterlife() {
@@ -27,7 +27,7 @@ class NSObjectTests: XCTestCase {
 
             func innerScope() {
                 killme = NSObject()
-                after(life: killme).then { _ -> Void in
+                after(life: killme).done { _ in
                     //…
                     ex.fulfill()
                 }
@@ -35,12 +35,12 @@ class NSObjectTests: XCTestCase {
 
             innerScope()
 
-            after(interval: 0.2).then {
+            after(.milliseconds(200)).done {
                 killme = nil
             }
         }
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
     }
 
     func testMultiObserveAfterlife() {
@@ -52,22 +52,22 @@ class NSObjectTests: XCTestCase {
 
             func innerScope() {
                 killme = NSObject()
-                after(life: killme).then { _ -> Void in
+                after(life: killme).done { _ in
                     ex1.fulfill()
                 }
-                after(life: killme).then { _ -> Void in
+                after(life: killme).done { _ in
                     ex2.fulfill()
                 }
             }
 
             innerScope()
 
-            after(interval: 0.2).then {
+            after(.milliseconds(200)).done {
                 killme = nil
             }
         }
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
     }
 }
 

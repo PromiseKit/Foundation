@@ -38,14 +38,6 @@
                BlueprintName = "PMKNSTests"
                ReferencedContainer = "container:PMKFoundation.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "NSURLSessionTests/test200">
-               </Test>
-               <Test
-                  Identifier = "NSURLSessionTests/testBadJSON">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

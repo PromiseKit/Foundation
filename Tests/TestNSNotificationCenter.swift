@@ -8,15 +8,14 @@ class NSNotificationCenterTests: XCTestCase {
         let ex = expectation(description: "")
         let userInfo = ["a": 1]
 
-        NotificationCenter.default.observe(once: PMKTestNotification).then { value -> Void in
-            XCTAssertEqual(value.count, 1)
-            //FIXME XCTAssert(value["a"] == (1 as Any?))
+        NotificationCenter.default.observe(once: PMKTestNotification).done { value in
+            XCTAssertEqual(value.userInfo?.count, 1)
             ex.fulfill()
         }
 
         NotificationCenter.default.post(name: PMKTestNotification, object: nil, userInfo: userInfo)
 
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1)
     }
 }
 

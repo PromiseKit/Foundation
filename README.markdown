@@ -1,8 +1,8 @@
 # PromiseKit Foundation Extensions ![Build Status]
 
-This project adds promises to Apple’s Foundation framework.
+This project adds promises to the Swift Foundation framework.
 
-This project supports Swift 3.1, 3.2 and 4.0.
+We support iOS, tvOS, watchOS, macOS and Linux, Swift 3.0, 3.1 and 3.2.
 
 This project does not currently support Linux, but PRs welcome.
 
