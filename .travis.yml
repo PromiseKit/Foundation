@@ -1,63 +1,41 @@
+os: osx
+language: objective-c
 matrix:
   include:
-    - os: linux
-      dist: trusty
-      sudo: required
-      services: docker
-      env: DOCKER_IMAGE=swift:3.1
-    - os: osx
-      language: objective-c
-      osx_image: xcode8.3
+    - osx_image: xcode8.2
+      env: PLAT=macOS SWFT=3.0
+    - osx_image: xcode8.2
+      env: PLAT=iOS SWFT=3.0
+    - osx_image: xcode8.2
+      env: PLAT=tvOS SWFT=3.0
+    - osx_image: xcode8.2
+      env: PLAT=watchOS SWFT=3.0
+    - osx_image: xcode8.3
       env: PLAT=macOS SWFT=3.1
-    - os: osx
-      language: objective-c
-      osx_image: xcode8.3
+    - osx_image: xcode8.3
       env: PLAT=iOS SWFT=3.1
-    - os: osx
-      language: objective-c
-      osx_image: xcode8.3
+    - osx_image: xcode8.3
       env: PLAT=tvOS SWFT=3.1
-    - os: osx
-      language: objective-c
-      osx_image: xcode8.3
+    - osx_image: xcode8.3
       env: PLAT=watchOS SWFT=3.1
-    - os: osx
-      language: objective-c
-      osx_image: xcode9
+    - osx_image: xcode9
       env: PLAT=macOS SWFT=3.2
-    - os: osx
-      language: objective-c
-      osx_image: xcode9
+    - osx_image: xcode9
       env: PLAT=iOS SWFT=3.2
-    - os: osx
-      language: objective-c
-      osx_image: xcode9
+    - osx_image: xcode9
       env: PLAT=tvOS SWFT=3.2
-    - os: osx
-      language: objective-c
-      osx_image: xcode9
+    - osx_image: xcode9
       env: PLAT=watchOS SWFT=3.2
-    - os: osx
-      language: objective-c
-      osx_image: xcode9
+    - osx_image: xcode9
       env: PLAT=macOS SWFT=4.0
-    - os: osx
-      language: objective-c
-      osx_image: xcode9
+    - osx_image: xcode9
       env: PLAT=iOS SWFT=4.0
-    - os: osx
-      language: objective-c
-      osx_image: xcode9
+    - osx_image: xcode9
       env: PLAT=tvOS SWFT=4.0
-    - os: osx
-      language: objective-c
-      osx_image: xcode9
+    - osx_image: xcode9
       env: PLAT=watchOS SWFT=4.0
 before_install:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      docker pull $DOCKER_IMAGE;
-    fi;
-    case $PLAT in
+  - case $PLAT in
     iOS)
       NAME="iPhone SE";;
     tvOS)
@@ -67,6 +45,7 @@ before_install:
     esac;
     if [ -n "$NAME" ]; then
       export UUID=$(instruments -s | ruby -e "ARGF.each_line{ |ln| ln =~ /$NAME .* \[(.*)\]/; if \$1; puts(\$1); exit; end }");
+      export DESTINATION="id=$UUID";
     fi
 install:
   - case $PLAT in
@@ -79,14 +58,14 @@ script:
   - set -o pipefail;
     case $PLAT in
     macOS)
-      xcodebuild -scheme PMKFoundation SWIFT_VERSION=$SWFT -quiet -enableCodeCoverage YES test | xcpretty;;
+      xcodebuild -scheme PMKFoundation -quiet -enableCodeCoverage YES build clean SWIFT_VERSION=$SWFT;
+      xcodebuild -scheme PMKFoundation -quiet test;;
     iOS|tvOS)
-      open -a "simulator" --args -CurrentDeviceUDID "$UUID";
-      xcodebuild -scheme PMKFoundation SWIFT_VERSION=$SWFT -destination "id=$UUID" -quiet -enableCodeCoverage YES test | xcpretty;;
+      open -b com.apple.iphonesimulator --args -CurrentDeviceUDID "$UUID";
+      xcodebuild -scheme PMKFoundation -quiet -destination "$DESTINATION" -enableCodeCoverage YES build clean SWIFT_VERSION=$SWFT;
+      xcodebuild -scheme PMKFoundation -quiet -destination "$DESTINATION" test;;
     watchOS)
-      xcodebuild -scheme PMKFoundation SWIFT_VERSION=$SWFT -destination "id=$UUID" -quiet | xcpretty;;
-    *)
-      docker-compose run PMKFoundation;;
+      xcodebuild -scheme PMKFoundation -quiet -destination "$DESTINATION" -quiet clean build SWIFT_VERSION=$SWFT;;
     esac
 after_success:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
