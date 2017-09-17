@@ -39,7 +39,7 @@ import PMKFoundation
 ```swift
 let package = Package(
     dependencies: [
-        .Target(url: "https://github.com/PromiseKit/Foundation", majorVersion: 1)
+        .Package(url: "https://github.com/PromiseKit/Foundation.git", majorVersion: 1)
     ]
 )
 ```
