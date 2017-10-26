@@ -9,7 +9,7 @@ This project does not currently support Linux, but PRs welcome.
 ## CococaPods
 
 ```ruby
-pod "PromiseKit/Foundation" ~> 4.0
+pod "PromiseKit/Foundation", "~> 4.0"
 ```
 
 The extensions are built into `PromiseKit.framework` thus nothing else is needed.
