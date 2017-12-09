@@ -1,71 +1,52 @@
-os: osx
-language: objective-c
 matrix:
   include:
-    - osx_image: xcode8.2
-      env: PLAT=macOS SWFT=3.0
-    - osx_image: xcode8.2
-      env: PLAT=iOS SWFT=3.0
-    - osx_image: xcode8.2
-      env: PLAT=tvOS SWFT=3.0
-    - osx_image: xcode8.2
-      env: PLAT=watchOS SWFT=3.0
-    - osx_image: xcode8.3
-      env: PLAT=macOS SWFT=3.1
-    - osx_image: xcode8.3
-      env: PLAT=iOS SWFT=3.1
-    - osx_image: xcode8.3
-      env: PLAT=tvOS SWFT=3.1
-    - osx_image: xcode8.3
-      env: PLAT=watchOS SWFT=3.1
-    - osx_image: xcode9
-      env: PLAT=macOS SWFT=3.2
-    - osx_image: xcode9
-      env: PLAT=iOS SWFT=3.2
-    - osx_image: xcode9
-      env: PLAT=tvOS SWFT=3.2
-    - osx_image: xcode9
-      env: PLAT=watchOS SWFT=3.2
-    - osx_image: xcode9
-      env: PLAT=macOS SWFT=4.0
-    - osx_image: xcode9
-      env: PLAT=iOS SWFT=4.0
-    - osx_image: xcode9
-      env: PLAT=tvOS SWFT=4.0
-    - osx_image: xcode9
-      env: PLAT=watchOS SWFT=4.0
+    - {osx_image: xcode8.3,  env: 'PLAT=macOS    SWFT=3.1  DST="arch=x86_64"', language: objective-c, os: osx}
+    - {osx_image: xcode8.3,  env: 'PLAT=iOS      SWFT=3.1  DST="OS=8.4,name=iPhone 4s"', language: objective-c, os: osx}
+    - {osx_image: xcode8.3,  env: 'PLAT=iOS      SWFT=3.1  DST="OS=9.3,name=iPhone SE"', language: objective-c, os: osx}
+    - {osx_image: xcode8.3,  env: 'PLAT=iOS      SWFT=3.1  DST="OS=10.3.1,name=iPhone SE"', language: objective-c, os: osx}
+    - {osx_image: xcode8.3,  env: 'PLAT=tvOS     SWFT=3.1  DST="OS=10.2,name=Apple TV 1080p"', language: objective-c, os: osx}
+    - {osx_image: xcode8.3,  env: 'PLAT=watchOS  SWFT=3.1  DST="OS=2.2,name=Apple Watch - 38mm"', language: objective-c, os: osx}
+    - {osx_image: xcode8.3,  env: 'PLAT=watchOS  SWFT=3.1  DST="OS=3.2,name=Apple Watch - 38mm"', language: objective-c, os: osx}
+                                                           
+    - {osx_image: xcode9.2,  env: 'PLAT=macOS    SWFT=3.2  DST="arch=x86_64"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=iOS      SWFT=3.2  DST="OS=11.2,name=iPhone SE"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=tvOS     SWFT=3.2  DST="OS=11.2,name=Apple TV"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=watchOS  SWFT=3.2  DST="OS=4.2,name=Apple Watch - 38mm"', language: objective-c, os: osx}
+                                                           
+    - {osx_image: xcode9.2,  env: 'PLAT=macOS    SWFT=4.0  DST="arch=x86_64"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=iOS      SWFT=4.0  DST="OS=8.4,name=iPhone 4s"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=iOS      SWFT=4.0  DST="OS=9.3,name=iPhone SE"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=iOS      SWFT=4.0  DST="OS=10.3.1,name=iPhone SE"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=iOS      SWFT=4.0  DST="OS=11.2,name=iPhone SE"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=tvOS     SWFT=4.0  DST="OS=9.2,name=Apple TV 1080p"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=tvOS     SWFT=4.0  DST="OS=10.2,name=Apple TV 1080p"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=tvOS     SWFT=4.0  DST="OS=11.2,name=Apple TV"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=watchOS  SWFT=4.0  DST="OS=2.2,name=Apple Watch - 38mm"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=watchOS  SWFT=4.0  DST="OS=3.2,name=Apple Watch - 38mm"', language: objective-c, os: osx}
+    - {osx_image: xcode9.2,  env: 'PLAT=watchOS  SWFT=4.0  DST="OS=4.2,name=Apple Watch - 38mm"', language: objective-c, os: osx}
+    
+    - {os: linux, dist: trusty, sudo: required, services: docker, env: 'DOCKER_IMAGE=swift:3.1'}
+cache:
+  directories:
+  - Carthage
 before_install:
-  - case $PLAT in
-    iOS)
-      NAME="iPhone SE";;
-    tvOS)
-      NAME="Apple TV 1080p";;
-    watchOS)
-      NAME="Apple Watch - 38mm";;
-    esac;
-    if [ -n "$NAME" ]; then
-      export UUID=$(instruments -s | ruby -e "ARGF.each_line{ |ln| ln =~ /$NAME .* \[(.*)\]/; if \$1; puts(\$1); exit; end }");
-      export DESTINATION="id=$UUID";
-    fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      docker pull $DOCKER_IMAGE;
+    fi;
 install:
-  - case $PLAT in
-    macOS)
-      carthage bootstrap --platform Mac;;
-    tvOS|iOS|watchOS)
-      carthage bootstrap --platform $PLAT;;
-    esac;
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      carthage bootstrap --cache-builds --no-use-binaries --platform $PLAT;
+    fi
 script:
-  - set -o pipefail;
-    case $PLAT in
-    macOS)
-      xcodebuild -scheme PMKFoundation -quiet -enableCodeCoverage YES build clean SWIFT_VERSION=$SWFT;
-      xcodebuild -scheme PMKFoundation -quiet test;;
-    iOS|tvOS)
-      open -b com.apple.iphonesimulator --args -CurrentDeviceUDID "$UUID";
-      xcodebuild -scheme PMKFoundation -quiet -destination "$DESTINATION" -enableCodeCoverage YES build clean SWIFT_VERSION=$SWFT;
-      xcodebuild -scheme PMKFoundation -quiet -destination "$DESTINATION" test;;
+  - set -o pipefail
+  - case $PLAT in
     watchOS)
-      xcodebuild -scheme PMKFoundation -quiet -destination "$DESTINATION" -quiet clean build SWIFT_VERSION=$SWFT;;
+      xcodebuild -scheme PMKFoundation -quiet -destination "$DST" build SWIFT_VERSION=$SWFT;;
+    macOS|tvOS|iOS)
+      xcodebuild -scheme PMKFoundation -quiet -destination "$DST" build-for-testing SWIFT_VERSION=$SWFT -enableCodeCoverage YES;
+      xcodebuild -scheme PMKFoundation -quiet -destination "$DST" test;;
+    *)
+      docker-compose run PMKFoundation;;
     esac
 after_success:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
