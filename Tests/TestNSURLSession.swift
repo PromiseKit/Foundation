@@ -48,6 +48,28 @@ class NSURLSessionTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
+    /// test that our convenience String constructor applies
+    func test3() {
+        let dummy = "fred"
+
+        OHHTTPStubs.stubRequests(passingTest: { $0.url!.host == "example.com" }) { _ in
+            let data = dummy.data(using: .utf8)!
+            return OHHTTPStubsResponse(data: data, statusCode: 200, headers: [:])
+        }
+
+        let ex = expectation(description: "")
+        let rq = URLRequest(url: URL(string: "http://example.com")!)
+
+        after(.milliseconds(100)).then {
+            URLSession.shared.dataTask(.promise, with: rq)
+        }.map(String.init).done {
+            XCTAssertEqual($0, dummy)
+            ex.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
     override func tearDown() {
         OHHTTPStubs.removeAllStubs()
     }

@@ -126,7 +126,15 @@ extension URL: URLRequestConvertible {
 
 #if !os(Linux)
 public extension String {
-    /// - Remark: useful when converting a `URLSession` response into a `String`
+    /**
+      - Remark: useful when converting a `URLSession` response into a `String`
+
+            firstly {
+                URLSession.shared.dataTask(.promise, with: rq)
+            }.map(String.init).done {
+                print($0)
+            }
+     */
     init?(data: Data, urlResponse: URLResponse) {
         guard let str = String(bytes: data, encoding: urlResponse.stringEncoding ?? .utf8) else {
             return nil
