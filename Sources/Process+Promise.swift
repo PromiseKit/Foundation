@@ -101,7 +101,13 @@ extension Process {
         var args = [launchPath]
         arguments.flatMap{ args += $0 }
         return args.map { arg in
-            if arg.characters.contains(" ") {
+            let contains: Bool
+          #if swift(>=4.0)
+            contains = arg.contains(" ")
+          #else
+            contains = arg.characters.contains(" ")
+          #endif
+            if contains {
                 return "\"\(arg)\""
             } else if arg == "" {
                 return "\"\""
