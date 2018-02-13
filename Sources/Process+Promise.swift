@@ -58,14 +58,24 @@ extension Process {
             return Promise(error: error)
         }
 
-        return DispatchQueue.global().async(.promise) {
-            self.waitUntilExit()
 
-            guard self.terminationReason == .exit, self.terminationStatus == 0 else {
-                throw PMKError.execution(self)
+        var q: DispatchQueue {
+            if #available(macOS 10.10, iOS 8.0, tvOS 9.0, watchOS 2.0, *) {
+                return DispatchQueue.global(qos: .default)
+            } else {
+                return DispatchQueue.global(priority: .default)
             }
+        }
 
-            return (stdout, stderr)
+        return Promise { seal in
+            q.async {
+                self.waitUntilExit()
+
+                guard self.terminationReason == .exit, self.terminationStatus == 0 else {
+                    return seal.reject(PMKError.execution(self))
+                }
+                seal.fulfill((stdout, stderr))
+            }
         }
     }
 
@@ -102,7 +112,7 @@ extension Process {
         arguments.flatMap{ args += $0 }
         return args.map { arg in
             let contains: Bool
-          #if swift(>=4.0)
+          #if swift(>=3.2)
             contains = arg.contains(" ")
           #else
             contains = arg.characters.contains(" ")
