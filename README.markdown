@@ -2,14 +2,12 @@
 
 This project adds promises to the Swift Foundation framework.
 
-We support iOS, tvOS, watchOS, macOS and Linux, Swift 3.0, 3.1 and 3.2.
-
-This project does not currently support Linux, but PRs welcome.
+We support iOS, tvOS, watchOS, macOS and Linux, Swift 3.0, 3.1, 3.2, 4.0 and 4.1.
 
 ## CococaPods
 
 ```ruby
-pod "PromiseKit/Foundation", "~> 4.0"
+pod "PromiseKit/Foundation", "~> 6.0"
 ```
 
 The extensions are built into `PromiseKit.framework` thus nothing else is needed.
@@ -17,7 +15,7 @@ The extensions are built into `PromiseKit.framework` thus nothing else is needed
 ## Carthage
 
 ```ruby
-github "PromiseKit/Foundation" ~> 1.0
+github "PromiseKit/Foundation" ~> 3.0
 ```
 
 The extensions are built into their own framework:
@@ -39,7 +37,7 @@ import PMKFoundation
 ```swift
 let package = Package(
     dependencies: [
-        .Package(url: "https://github.com/PromiseKit/Foundation.git", majorVersion: 1)
+        .Package(url: "https://github.com/PromiseKit/Foundation.git", majorVersion: 3)
     ]
 )
 ```
