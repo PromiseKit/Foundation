@@ -72,5 +72,5 @@ class NSObjectTests: XCTestCase {
 }
 
 private class Foo: NSObject {
-    dynamic var bar: String = "bar"
+    @objc dynamic var bar: String = "bar"
 }
