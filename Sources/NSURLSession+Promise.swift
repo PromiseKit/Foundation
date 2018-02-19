@@ -24,7 +24,7 @@ extension URLSession {
 
          firstly {
              URLSession.shared.dataTask(.promise, with: rq)
-         }.flatMap { data, _ in
+         }.compactMap { data, _ in
              try JSONSerialization.jsonObject(with: data) as? [String: Any]
          }.then { json in
              //…
@@ -43,17 +43,17 @@ extension URLSession {
      
          firstly {
              URLSession.shared.dataTask(.promise, with: rq)
-         }.flatMap(String.init).then { string in
+         }.compactMap(String.init).then { string in
              // decoded per the string encoding specified by the server
          }.then { string in
              print("response: string")
          }
      
-     Other common types can be easily decoded using flatMap also:
+     Other common types can be easily decoded using compactMap also:
      
          firstly {
              URLSession.shared.dataTask(.promise, with: rq)
-         }.flatMap {
+         }.compactMap {
              UIImage(data: $0)
          }.then {
              self.imageView.image = $0
@@ -64,7 +64,7 @@ extension URLSession {
      
          firstly {
              URLSession.shared.dataTask(.promise, with: rq)
-         }.flatMap(on: QoS.userInitiated) { data, _ in
+         }.compactMap(on: QoS.userInitiated) { data, _ in
              guard let img = UIImage(data: data) else { return nil }
              _ = cgImage?.dataProvider?.data
              return img

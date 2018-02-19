@@ -27,7 +27,7 @@ extension Process {
          let proc = Process()
          proc.launchPath = "/bin/ls"
          proc.arguments = ["/bin"]
-         proc.launch(.promise).flatMap { std in
+         proc.launch(.promise).compactMap { std in
              String(data: std.out.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
          }.then { stdout in
              print(str)

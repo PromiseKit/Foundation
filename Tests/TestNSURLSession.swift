@@ -15,7 +15,7 @@ class NSURLSessionTests: XCTestCase {
         let rq = URLRequest(url: URL(string: "http://example.com")!)
         firstly {
             URLSession.shared.dataTask(.promise, with: rq)
-        }.flatMap {
+        }.compactMap {
             try JSONSerialization.jsonObject(with: $0.data) as? NSDictionary
         }.done { rsp in
             XCTAssertEqual(json, rsp)
