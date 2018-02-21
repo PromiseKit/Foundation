@@ -32,25 +32,25 @@ matrix:
     - {osx_image: xcode9.3beta, env: 'SWFT=4.1  PLAT=macOS    DST="arch=x86_64"',                    os: osx, language: objective-c}
     - {osx_image: xcode9.3beta, env: 'SWFT=4.1  PLAT=watchOS  DST="OS=4.3,name=Apple Watch - 38mm"', os: osx, language: objective-c}
 
-    - {os: linux, dist: trusty, sudo: required, services: docker, env: 'DOCKER_IMAGE=swift:3.1'}
-    - {os: linux, dist: trusty, sudo: required, services: docker, env: 'DOCKER_IMAGE=swift:4.0'}
+    - {os: linux, dist: trusty, sudo: required, language: generic, env: 'SWIFT_VERSION=3.1'}
+    - {os: linux, dist: trusty, sudo: required, language: generic, env: 'SWIFT_VERSION=4.0'}
 cache:
   directories:
   - Carthage
 before_install:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      docker pull $DOCKER_IMAGE;
-    else
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
       carthage bootstrap --cache-builds --no-use-binaries --platform $PLAT --verbose;
+    else
+      eval "$(curl -sL https://swiftenv.fuller.li/install.sh)";
     fi
 install:
   - case $PLAT in
-    watchOS)
-      xcodebuild -scheme PMKFoundation -quiet -destination "$DST" SWIFT_VERSION=$SWFT build;;
     macOS|tvOS|iOS)
       xcodebuild -scheme PMKFoundation -quiet -destination "$DST" SWIFT_VERSION=$SWFT build-for-testing -enableCodeCoverage YES;;
+    watchOS)
+      xcodebuild -scheme PMKFoundation -quiet -destination "$DST" SWIFT_VERSION=$SWFT build;;
     *)
-      docker-compose run PMKFoundation;;
+      swift build;;
     esac
 script:
   - case $PLAT in
@@ -59,7 +59,7 @@ script:
     watchOS)
       ;;
     *)
-      docker-compose run PMKFoundation;;
+      ;;
     esac
 after_success:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
