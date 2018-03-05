@@ -91,7 +91,7 @@ extension Process {
 
 
 extension Process.PMKError: LocalizedError {
-    public var errorDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .notExecutable(let path?):
             return "File not executable: \(path)"
