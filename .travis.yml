@@ -45,10 +45,8 @@ before_install:
     fi
 install:
   - case $PLAT in
-    macOS|tvOS|iOS)
-      xcodebuild -scheme PMKFoundation -quiet -destination "$DST" SWIFT_VERSION=$SWFT build-for-testing -enableCodeCoverage YES;;
-    watchOS)
-      xcodebuild -scheme PMKFoundation -quiet -destination "$DST" SWIFT_VERSION=$SWFT build;;
+    macOS|tvOS|iOS|watchOS)
+      xcodebuild -scheme PMKFoundation -quiet -destination "$DST" SWIFT_VERSION=$SWFT SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build;;
     *)
       swift build;;
     esac
