@@ -3,7 +3,9 @@ import PackageDescription
 let package = Package(
     name: "PMKFoundation",
     dependencies: [
-        .Package(url: "https://github.com/mxcl/PromiseKit.git", majorVersion: 6)
+        .Package(url: "https://github.com/mxcl/PromiseKit.git", majorVersion: 6),
+//      .Package(url: "https://github.com/PromiseKit/Cancel.git", majorVersion: 1),
+        .Package(url: "https://github.com/dougzilla32/Cancel.git", majorVersion: 1)
     ],
     exclude: [
         "Sources/NSNotificationCenter+AnyPromise.m",
