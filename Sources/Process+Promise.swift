@@ -1,5 +1,6 @@
 import Foundation
 #if !PMKCocoaPods
+import PMKCancel
 import PromiseKit
 #endif
 
@@ -140,6 +141,42 @@ extension Process {
                 return arg
             }
         }.joined(separator: " ")
+    }
+}
+
+//////////////////////////////////////////////////////////// Cancellation
+
+extension Process: CancellableTask {
+    /// Sends an interrupt signal to the process
+    public func cancel() {
+        interrupt()
+    }
+    
+    /// `true` if the Process was successfully interrupted, `false` otherwise
+    public var isCancelled: Bool {
+        return !isRunning
+    }
+}
+
+extension Process {
+    /**
+     Launches the receiver and resolves when it exits, or when the promise is cancelled.
+     
+         let proc = Process()
+         proc.launchPath = "/bin/ls"
+         proc.arguments = ["/bin"]
+         let context = proc.launchCC(.promise).compactMap { std in
+             String(data: std.out.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
+         }.then { stdout in
+             print(str)
+         }.cancelContext
+
+         //…
+
+         context.cancel()
+     */
+    public func launchCC(_: PMKNamespacer) -> CancellablePromise<(out: Pipe, err: Pipe)> {
+        return CancellablePromise(task: self, self.launch(.promise))
     }
 }
 
