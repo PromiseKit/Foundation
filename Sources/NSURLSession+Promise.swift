@@ -211,12 +211,14 @@ public enum PMKHTTPError: Error, LocalizedError, CustomStringConvertible {
 
     public var description: String {
         switch self {
-        case .badStatusCode:
-            var rv = String(describing: self)
-            if let str = responseBodyString {
-                rv += "\n" + str
-            }
-            return rv
+        case .badStatusCode(let code, let data, let response):
+            var dict: [String: Any] = [
+                "Status Code": code,
+                "Body": String(data: data, encoding: .utf8) ?? "\(data.count) bytes"
+            ]
+            dict["URL"] = response.url
+            dict["Headers"] = response.allHeaderFields
+            return "<NSHTTPResponse> \(dict as NSDictionary)" // as NSDictionary makes the output look like NSHTTPURLResponse lookss
         }
     }
 }
