@@ -14,6 +14,8 @@ let package = Package(
     ]
 )
 
+package.swiftLanguageVersions = [3, 4]
+
 #if os(Linux)
 package.exclude += [
     "Sources/afterlife.swift",
