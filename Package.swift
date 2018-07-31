@@ -5,6 +5,7 @@ let package = Package(
     dependencies: [
         .Package(url: "https://github.com/mxcl/PromiseKit.git", majorVersion: 6)
     ],
+    swiftLanguageVersions: [3, 4],
     exclude: [
         "Sources/NSNotificationCenter+AnyPromise.m",
         "Sources/NSTask+AnyPromise.m",

@@ -25,7 +25,11 @@ extension NotificationCenter {
       #if !os(Linux)
         let id = addObserver(forName: name, object: object, queue: nil, using: fulfill)
       #else
-        let id = addObserver(forName: name, object: object, queue: nil, usingBlock: fulfill)
+        #if swift(>=4.0.1)
+          let id = addObserver(forName: name, object: object, queue: nil, using: fulfill)
+        #else
+          let id = addObserver(forName: name, object: object, queue: nil, usingBlock: fulfill)
+        #endif
       #endif
         promise.done { _ in self.removeObserver(id) }
         return promise
