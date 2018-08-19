@@ -22,14 +22,10 @@ extension NotificationCenter {
     /// Observe the named notification once
     public func observe(once name: Notification.Name, object: Any? = nil) -> Guarantee<Notification> {
         let (promise, fulfill) = Guarantee<Notification>.pending()
-      #if !os(Linux)
+      #if !os(Linux) || swift(>=4.0.1) || (swift(>=3.1.1) && !swift(>=4.0.0))
         let id = addObserver(forName: name, object: object, queue: nil, using: fulfill)
       #else
-        #if swift(>=4.0.1)
-          let id = addObserver(forName: name, object: object, queue: nil, using: fulfill)
-        #else
-          let id = addObserver(forName: name, object: object, queue: nil, usingBlock: fulfill)
-        #endif
+        let id = addObserver(forName: name, object: object, queue: nil, usingBlock: fulfill)
       #endif
         promise.done { _ in self.removeObserver(id) }
         return promise
