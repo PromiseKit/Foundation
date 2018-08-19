@@ -170,6 +170,7 @@ private func adapter<T, U>(_ seal: Resolver<(data: T, response: U)>) -> (T?, U?,
 #if swift(>=3.1)
 public enum PMKHTTPError: Error, LocalizedError {
     case badStatusCode(Int, Data, HTTPURLResponse)
+    case invalidNetworkingProtocol
 
     public var errorDescription: String? {
         func url(_ rsp: URLResponse) -> String {
@@ -192,12 +193,14 @@ public enum PMKHTTPError: Error, LocalizedError {
 }
 
 public extension Promise where T == (data: Data, response: URLResponse) {
-    func validate() -> Promise<T> {
+    func validate() -> Promise<(data: Data, response: HTTPURLResponse)> {
         return map {
-            guard let response = $0.response as? HTTPURLResponse else { return $0 }
+            guard let response = $0.response as? HTTPURLResponse else {
+              throw PMKHTTPError.invalidNetworkingProtocol
+            }
             switch response.statusCode {
             case 200..<300:
-                return $0
+                return (data: $0.data, response: response)
             case let code:
                 throw PMKHTTPError.badStatusCode(code, $0.data, response)
             }
