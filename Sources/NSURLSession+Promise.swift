@@ -218,7 +218,7 @@ public enum PMKHTTPError: Error, LocalizedError, CustomStringConvertible {
             ]
             dict["URL"] = response.url
             dict["Headers"] = response.allHeaderFields
-            return "<NSHTTPResponse> \(dict as NSDictionary)" // as NSDictionary makes the output look like NSHTTPURLResponse lookss
+            return "<NSHTTPResponse> \(NSDictionary(dictionary: dict))" // as NSDictionary makes the output look like NSHTTPURLResponse looks
         }
     }
 }
