@@ -37,7 +37,16 @@
                 resolve([NSError errorWithDomain:PMKErrorDomain code:PMKTaskError userInfo:info]);
             }
         };
-        [self launch];
+        
+        if (@available(macOS 10.13, *)) {
+            NSError *error = nil;
+            
+            if (![self launchAndReturnError:&error]) {
+                resolve(error);
+            }
+        } else {
+            [self launch];
+        }
     }];
 }
 
