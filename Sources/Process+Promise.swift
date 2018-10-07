@@ -67,7 +67,7 @@ extension Process {
             }
         }
 
-        return Promise { seal in
+        return Promise<(out: Pipe, err: Pipe)>(cancellableTask: self) { seal in
             q.async {
                 self.waitUntilExit()
 
@@ -140,6 +140,42 @@ extension Process {
                 return arg
             }
         }.joined(separator: " ")
+    }
+}
+
+extension Process: CancellableTask {
+    /// Sends an interrupt signal to the process
+    public func cancel() {
+        interrupt()
+    }
+    
+    /// `true` if the Process was successfully interrupted, `false` otherwise
+    public var isCancelled: Bool {
+        return !isRunning
+    }
+}
+
+//////////////////////////////////////////////////////////// Cancellable wrapper
+
+extension Process {
+    /**
+     Launches the receiver and resolves when it exits, or when the promise is cancelled.
+     
+         let proc = Process()
+         proc.launchPath = "/bin/ls"
+         proc.arguments = ["/bin"]
+         let context = proc.cancellableLaunch(.promise).compactMap { std in
+             String(data: std.out.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
+         }.then { stdout in
+             print(str)
+         }.cancelContext
+
+         //…
+
+         context.cancel()
+     */
+    public func cancellableLaunch(_: PMKNamespacer) -> CancellablePromise<(out: Pipe, err: Pipe)> {
+        return cancellable(launch(.promise))
     }
 }
 

@@ -20,3 +20,22 @@ class NSNotificationCenterTests: XCTestCase {
 }
 
 private let PMKTestNotification = Notification.Name("PMKTestNotification")
+
+//////////////////////////////////////////////////////////// Cancellation
+
+extension NSNotificationCenterTests {
+    func testCancel() {
+        let ex = expectation(description: "")
+        let userInfo = ["a": 1]
+
+        NotificationCenter.default.cancellableObserve(once: PMKTestNotification).done { value in
+            XCTFail()
+        }.catch(policy: .allErrors) {
+            $0.isCancelled ? ex.fulfill() : XCTFail()
+        }.cancel()
+
+        NotificationCenter.default.post(name: PMKTestNotification, object: nil, userInfo: userInfo)
+
+        waitForExpectations(timeout: 1)
+    }
+}
