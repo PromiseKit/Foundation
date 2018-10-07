@@ -85,6 +85,20 @@ jobs:
       env: SWIFT_BUILD_VERSION=4  SWIFT_VERSION=4.2
       name: Linux / Swift 4.2
 
+    - &swiftpm
+      stage: compile
+      name: Xcode 8.3 / SwiftPM
+      os: osx
+      osx_image: xcode8.3
+      language: objective-c
+      script: swift build
+    - <<: *swiftpm
+      name: Xcode 9.4 / SwiftPM
+      osx_image: xcode9.4
+    - <<: *swiftpm
+      name: Xcode 10.0 / SwiftPM
+      osx_image: xcode10
+
     - &test
       stage: test
       osx_image: xcode10
