@@ -38,7 +38,7 @@ class NSTaskTests: XCTestCase {
                 let stderr = (proc.standardError as! Pipe).fileHandleForReading.readDataToEndOfFile()
 
                 XCTAssertEqual(stderr, expectedStderrData)
-                XCTAssertEqual(proc.terminationStatus, 1)
+                XCTAssertEqual(proc.process.terminationStatus, 1)
                 XCTAssertEqual(stdout.count, 0)
             } catch {
                 XCTFail()
