@@ -33,11 +33,11 @@ class NSTaskTests: XCTestCase {
             do {
                 throw err
             } catch Process.PMKError.execution(let proc, let stdout, let stderr) {
-                let expectedStderrData = "ls: \(dir): No such file or directory\n".data(using: .utf8, allowLossyConversion: false)!
+                let expectedStderr = "ls: \(dir): No such file or directory\n"
 
-                XCTAssertEqual(stderr, expectedStderrData)
+                XCTAssertEqual(stderr, expectedStderr)
                 XCTAssertEqual(proc.terminationStatus, 1)
-                XCTAssertEqual(stdout.count, 0)
+                XCTAssertEqual(stdout?.count ?? 0, 0)
             } catch {
                 XCTFail()
             }
