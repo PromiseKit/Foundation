@@ -97,7 +97,12 @@ extension Process {
 
         let bufsize = 1024 * 8
         let buf = UnsafeMutablePointer<UInt8>.allocate(capacity: bufsize)
-        defer { buf.deallocate() }
+
+        #if swift(>=4.1)
+            defer { buf.deallocate() }
+        #else
+            defer { buf.deallocate(capacity: bufsize) }
+        #endif
 
         var data = Data()
 
