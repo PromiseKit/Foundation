@@ -28,7 +28,7 @@ extension NSNotificationCenterTests {
         let ex = expectation(description: "")
         let userInfo = ["a": 1]
 
-        NotificationCenter.default.cancellableObserve(once: PMKTestNotification).done { value in
+        cancellable(NotificationCenter.default.observe(once: PMKTestNotification)).done { value in
             XCTFail()
         }.catch(policy: .allErrors) {
             $0.isCancelled ? ex.fulfill() : XCTFail()

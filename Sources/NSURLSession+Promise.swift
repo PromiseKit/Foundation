@@ -76,7 +76,9 @@ extension URLSession {
      - Returns: A promise that represents the URL request.
      - SeeAlso: [OMGHTTPURLRQ]
      - Remark: We deliberately don’t provide a `URLRequestConvertible` for `String` because in our experience, you should be explicit with this error path to make good apps.
-     
+     - Note: cancelling this promise will cancel the underlying task
+     - SeeAlso: [Cancellation](http://promisekit.org/docs/)
+    
      [OMGHTTPURLRQ]: https://github.com/mxcl/OMGHTTPURLRQ
      */
     public func dataTask(_: PMKNamespacer, with convertible: URLRequestConvertible) -> Promise<(data: Data, response: URLResponse)> {
@@ -93,6 +95,8 @@ extension URLSession {
         return promise
     }
 
+    /// - Note: cancelling this promise will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func uploadTask(_: PMKNamespacer, with convertible: URLRequestConvertible, from data: Data) -> Promise<(data: Data, response: URLResponse)> {
         var task: URLSessionTask!
         var reject: ((Error) -> Void)!
@@ -107,6 +111,8 @@ extension URLSession {
         return promise
     }
 
+    /// - Note: cancelling this promise will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func uploadTask(_: PMKNamespacer, with convertible: URLRequestConvertible, fromFile file: URL) -> Promise<(data: Data, response: URLResponse)> {
         var task: URLSessionTask!
         var reject: ((Error) -> Void)!
@@ -123,6 +129,8 @@ extension URLSession {
 
     /// - Remark: we force a `to` parameter because Apple deletes the downloaded file immediately after the underyling completion handler returns.
     /// - Note: we do not create the destination directory for you, because we move the file with FileManager.moveItem which changes it behavior depending on the directory status of the URL you provide. So create your own directory first!
+    /// - Note: cancelling this promise will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func downloadTask(_: PMKNamespacer, with convertible: URLRequestConvertible, to saveLocation: URL) -> Promise<(saveLocation: URL, response: URLResponse)> {
         var task: URLSessionTask!
         var reject: ((Error) -> Void)!
@@ -280,114 +288,6 @@ extension URLSessionTask: CancellableTask {
     /// `true` if the URLSessionTask was successfully cancelled, `false` otherwise
     public var isCancelled: Bool {
         return state == .canceling
-    }
-}
-
-//////////////////////////////////////////////////////////// Cancellable wrappers
-
-extension URLSession {
-    /**
-     Example usage with explicit cancel context:
-
-         let context = firstly {
-             URLSession.shared.cancellableDataTask(.promise, with: rq)
-         }.compactMap { data, _ in
-             try JSONSerialization.jsonObject(with: data) as? [String: Any]
-         }.then { json in
-             //…
-         }.cancelContext
-         //…
-         context.cancel()
-
-     Example usage with implicit cancel context:
-     
-         let promise = firstly {
-             URLSession.shared.cancellableDataTask(.promise, with: rq)
-         }.compactMap { data, _ in
-             try JSONSerialization.jsonObject(with: data) as? [String: Any]
-         }.then { json in
-             //…
-         }
-         //…
-         promise.cancel()
-     
-     We recommend the use of [OMGHTTPURLRQ] which allows you to construct correct REST requests:
-
-         let context = firstly {
-             let rq = OMGHTTPURLRQ.POST(url, json: parameters)
-             URLSession.shared.cancellableDataTask(.promise, with: rq)
-         }.then { data, urlResponse in
-             //…
-         }.cancelContext
-         //…
-         context.cancel()
-
-     We provide a convenience initializer for `String` specifically for this promise:
-     
-         let context = firstly {
-             URLSession.shared.cancellableDataTask(.promise, with: rq)
-         }.compactMap(String.init).then { string in
-             // decoded per the string encoding specified by the server
-         }.then { string in
-             print("response: string")
-         }
-         //…
-         context.cancel()
-     
-     Other common types can be easily decoded using compactMap also:
-     
-         let context = firstly {
-             URLSession.shared.cancellableDataTask(.promise, with: rq)
-         }.compactMap {
-             UIImage(data: $0)
-         }.then {
-             self.imageView.image = $0
-         }
-         //…
-         context.cancel()
-
-     Though if you do decode the image this way, we recommend inflating it on a background thread
-     first as this will improve main thread performance when rendering the image:
-     
-         let context = firstly {
-             URLSession.shared.cancellableDataTask(.promise, with: rq)
-         }.compactMap(on: QoS.userInitiated) { data, _ in
-             guard let img = UIImage(data: data) else { return nil }
-             _ = cgImage?.dataProvider?.data
-             return img
-         }.then {
-             self.imageView.image = $0
-         }
-         //…
-         context.cancel()
-
-     - Parameter convertible: A URL or URLRequest.
-     - Returns: A cancellable promise that represents the URL request.
-     - SeeAlso: [OMGHTTPURLRQ]
-     - Remark: We deliberately don’t provide a `URLRequestConvertible` for `String` because in our experience, you should be explicit with this error path to make good apps.
-     
-     [OMGHTTPURLRQ]: https://github.com/mxcl/OMGHTTPURLRQ
-     */
-    public func cancellableDataTask(_: PMKNamespacer, with convertible: URLRequestConvertible) -> CancellablePromise<(data: Data, response: URLResponse)> {
-        return cancellable(dataTask(.promise, with: convertible))
-    }
-
-    /// Wraps the (Data?, URLResponse?, Error?) response from URLSession.uploadTask(with:from:) as CancellablePromise<(Data,URLResponse)>
-    public func cancellableUploadTask(_: PMKNamespacer, with convertible: URLRequestConvertible, from data: Data) -> CancellablePromise<(data: Data, response: URLResponse)> {
-        return cancellable(uploadTask(.promise, with: convertible, from: data))
-    }
-
-    /// Wraps the (Data?, URLResponse?, Error?) response from URLSession.uploadTask(with:fromFile:) as CancellablePromise<(Data,URLResponse)>
-    public func cancellableUploadTask(_: PMKNamespacer, with convertible: URLRequestConvertible, fromFile file: URL) -> CancellablePromise<(data: Data, response: URLResponse)> {
-        return cancellable(uploadTask(.promise, with: convertible, fromFile: file))
-    }
-
-    /**
-     Wraps the URLSesstionDownloadTask response from URLSession.downloadTask(with:) as CancellablePromise<(URL,URLResponse)>
-     - Remark: we force a `to` parameter because Apple deletes the downloaded file immediately after the underyling completion handler returns.
-     */
-    public func cancellableDownloadTask(_: PMKNamespacer, with convertible: URLRequestConvertible, to saveLocation: URL) -> CancellablePromise<(saveLocation: URL, response: URLResponse)> {
-        return cancellable(downloadTask(.promise, with: convertible, to: saveLocation))
     }
 }
 

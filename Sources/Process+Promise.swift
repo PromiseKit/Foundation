@@ -32,6 +32,8 @@ extension Process {
          }.then { stdout in
              print(str)
          }
+      - Note: cancelling this promise will cancel the underlying task
+      - SeeAlso: [Cancellation](http://promisekit.org/docs/)
      */
     public func launch(_: PMKNamespacer) -> Promise<(out: Pipe, err: Pipe)> {
         let (stdout, stderr) = (Pipe(), Pipe())
@@ -152,30 +154,6 @@ extension Process: CancellableTask {
     /// `true` if the Process was successfully interrupted, `false` otherwise
     public var isCancelled: Bool {
         return !isRunning
-    }
-}
-
-//////////////////////////////////////////////////////////// Cancellable wrapper
-
-extension Process {
-    /**
-     Launches the receiver and resolves when it exits, or when the promise is cancelled.
-     
-         let proc = Process()
-         proc.launchPath = "/bin/ls"
-         proc.arguments = ["/bin"]
-         let context = proc.cancellableLaunch(.promise).compactMap { std in
-             String(data: std.out.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
-         }.then { stdout in
-             print(str)
-         }.cancelContext
-
-         //…
-
-         context.cancel()
-     */
-    public func cancellableLaunch(_: PMKNamespacer) -> CancellablePromise<(out: Pipe, err: Pipe)> {
-        return cancellable(launch(.promise))
     }
 }
 

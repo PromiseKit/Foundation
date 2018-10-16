@@ -82,7 +82,7 @@ extension NSObjectTests {
         let ex = expectation(description: "")
 
         let foo = Foo()
-        foo.cancellableObserve(.promise, keyPath: "bar").done { newValue in
+        cancellable(foo.observe(.promise, keyPath: "bar")).done { newValue in
             XCTAssertEqual(newValue as? String, "moo")
             XCTFail()
             // ex.fulfill()
@@ -98,7 +98,7 @@ extension NSObjectTests {
         let ex = expectation(description: "")
 
         let foo = Foo()
-        let p = foo.cancellableObserve(.promise, keyPath: "bar").done { newValue in
+        let p = cancellable(foo.observe(.promise, keyPath: "bar")).done { newValue in
             XCTAssertEqual(newValue as? String, "moo")
             XCTFail()
             // ex.fulfill()
@@ -119,7 +119,7 @@ extension NSObjectTests {
             var p: CancellableFinalizer!
             func innerScope() {
                 killme = NSObject()
-                p = cancellableAfter(life: killme).done { _ in
+                p = cancellable(after(life: killme)).done { _ in
                     XCTFail()
                 }.catch(policy: .allErrors) {
                     $0.isCancelled ? ex.fulfill() : XCTFail()
@@ -146,12 +146,12 @@ extension NSObjectTests {
             var p1, p2: CancellableFinalizer!
             func innerScope() {
                 killme = NSObject()
-                p1 = cancellableAfter(life: killme).done { _ in
+                p1 = cancellable(after(life: killme)).done { _ in
                     XCTFail()
                 }.catch(policy: .allErrors) {
                     $0.isCancelled ? ex1.fulfill() : XCTFail()
                 }
-                p2 = cancellableAfter(life: killme).done { _ in
+                p2 = cancellable(after(life: killme)).done { _ in
                     XCTFail()
                 }.catch(policy: .allErrors) {
                     $0.isCancelled ? ex2.fulfill() : XCTFail()

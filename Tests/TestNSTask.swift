@@ -58,7 +58,7 @@ extension NSTaskTests {
         task.launchPath = "/usr/bin/man"
         task.arguments = ["ls"]
         
-        let context = task.cancellableLaunch(.promise).done { stdout, _ in
+        let context = cancellable(task.launch(.promise)).done { stdout, _ in
             let stdout = String(data: stdout.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
             XCTAssertEqual(stdout, "bar\n")
         }.catch(policy: .allErrors) { error in
@@ -76,7 +76,7 @@ extension NSTaskTests {
         task.launchPath = "/bin/ls"
         task.arguments = ["-l", dir]
 
-        let context = task.cancellableLaunch(.promise).done { _ in
+        let context = cancellable(task.launch(.promise)).done { _ in
             XCTFail("failed to cancel process")
         }.catch(policy: .allErrors) { error in
             error.isCancelled ? ex.fulfill() : XCTFail("unexpected error \(error)")

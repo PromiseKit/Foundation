@@ -23,6 +23,8 @@ extension NSObject {
       - Returns: A promise that resolves when the provided keyPath changes.
       - Warning: *Important* The promise must not outlive the object under observation.
       - SeeAlso: Apple’s KVO documentation.
+      - Note: cancelling this promise will cancel the underlying task
+      - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     */
     public func observe(_: PMKNamespacer, keyPath: String) -> Guarantee<Any?> {
         return Guarantee { KVOProxy(observee: self, keyPath: keyPath, resolve: $0) }
@@ -73,17 +75,4 @@ private class KVOProxy: NSObject, CancellableTask {
     private lazy var pointer: UnsafeMutableRawPointer = {
         return Unmanaged<KVOProxy>.passUnretained(self).toOpaque()
     }()
-}
-
-//////////////////////////////////////////////////////////// Cancellable wrapper
-
-extension NSObject {
-    /**
-     - Returns: A promise that resolves when the provided keyPath changes, or when the promise is cancelled.
-     - Warning: *Important* The promise must not outlive the object under observation.
-     - SeeAlso: Apple’s KVO documentation.
-     */
-    public func cancellableObserve(_: PMKNamespacer, keyPath: String) -> CancellablePromise<Any?> {
-        return cancellable(observe(.promise, keyPath: keyPath))
-    }
 }

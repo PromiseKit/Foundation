@@ -20,6 +20,8 @@ import PromiseKit
 */
 extension NotificationCenter {
     /// Observe the named notification once
+    /// - Note: cancelling this guarantee will cancel the underlying task
+    /// - SeeAlso: [Cancellation](http://promisekit.org/docs/)
     public func observe(once name: Notification.Name, object: Any? = nil) -> Guarantee<Notification> {
         let (promise, fulfill) = Guarantee<Notification>.pending()
       #if os(Linux) && ((swift(>=4.0) && !swift(>=4.0.1)) || (swift(>=3.0) && !swift(>=3.2.1)))
@@ -46,13 +48,4 @@ class ObserverTask: CancellableTask {
     }
     
     var isCancelled = false
-}
-
-//////////////////////////////////////////////////////////// Cancellable wrapper
-
-extension NotificationCenter {
-    /// Observe the named notification once
-    public func cancellableObserve(once name: Notification.Name, object: Any? = nil) -> CancellablePromise<Notification> {
-        return cancellable(observe(once: name, object: object))
-    }
 }

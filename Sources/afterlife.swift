@@ -6,6 +6,8 @@ import PromiseKit
 /**
  - Returns: A promise that resolves when the provided object deallocates
  - Important: The promise is not guarenteed to resolve immediately when the provided object is deallocated. So you cannot write code that depends on exact timing.
+ - Note: cancelling this guarantee will cancel the underlying task
+ - SeeAlso: [Cancellation](http://promisekit.org/docs/)
  */
 public func after(life object: NSObject) -> Guarantee<Void> {
     var reaper = objc_getAssociatedObject(object, &handle) as? GrimReaper
@@ -43,14 +45,4 @@ private class CancellableReaperTask: CancellableTask {
             isCancelled = true
         }
     }
-}
-
-//////////////////////////////////////////////////////////// Cancellable wrapper
-
-/**
- - Returns: A cancellable promise that resolves when the provided object deallocates, and can be unregistered and rejected by calling 'cancel'
- - Important: The promise is not guarenteed to resolve immediately when the provided object is deallocated. So you cannot write code that depends on exact timing.
- */
-public func cancellableAfter(life object: NSObject) -> CancellablePromise<Void> {
-    return cancellable(after(life: object))
 }

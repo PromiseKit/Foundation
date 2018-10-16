@@ -88,7 +88,7 @@ extension NSURLSessionTests {
         let ex = expectation(description: "")
         let rq = URLRequest(url: URL(string: "http://example.com")!)
         let context = firstly {
-            URLSession.shared.cancellableDataTask(.promise, with: rq)
+            cancellable(URLSession.shared.dataTask(.promise, with: rq))
         }.compactMap {
             try JSONSerialization.jsonObject(with: $0.data) as? NSDictionary
         }.done { rsp in
@@ -116,7 +116,7 @@ extension NSURLSessionTests {
         let rq = URLRequest(url: URL(string: "http://example.com")!)
 
         let context = cancellable(after(.milliseconds(100))).then {
-            URLSession.shared.cancellableDataTask(.promise, with: rq)
+            cancellable(URLSession.shared.dataTask(.promise, with: rq))
         }.done { x in
             XCTAssertEqual(x.data, dummy)
             ex.fulfill()
@@ -141,7 +141,7 @@ extension NSURLSessionTests {
         let rq = URLRequest(url: URL(string: "http://example.com")!)
 
         let context = cancellable(after(.milliseconds(100))).then {
-            URLSession.shared.cancellableDataTask(.promise, with: rq)
+            cancellable(URLSession.shared.dataTask(.promise, with: rq))
         }.map(String.init).done {
             XCTAssertEqual($0, dummy)
             ex.fulfill()
