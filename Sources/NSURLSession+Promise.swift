@@ -287,7 +287,7 @@ public extension Promise where T == (data: Data, response: URLResponse) {
 extension URLSessionTask: CancellableTask {
     /// `true` if the URLSessionTask was successfully cancelled, `false` otherwise
     public var isCancelled: Bool {
-        return state == .canceling
+        return state == .canceling || (error as NSError?)?.code == NSURLErrorCancelled
     }
 }
 
