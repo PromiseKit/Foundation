@@ -84,6 +84,9 @@ jobs:
     - <<: *linux
       env: SWIFT_BUILD_VERSION=4  SWIFT_VERSION=4.2
       name: Linux / Swift 4.2
+    - <<: *linux
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.0-DEVELOPMENT-SNAPSHOT-2019-01-22-a
+      name: Linux / Swift 5.0 (2019-01-22)
 
     - &swiftpm
       stage: compile
