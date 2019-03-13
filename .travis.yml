@@ -48,6 +48,10 @@ jobs:
       osx_image: xcode10
       env: SWIFT=4.2
       name: pod lib lint --swift-version=4.2
+    - <<: *pod
+      osx_image: xcode10.2
+      env: SWIFT=5.0
+      name: pod lib lint --swift-version=5.0
 
     - &linux
       stage: compile
