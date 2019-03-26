@@ -1,9 +1,13 @@
+os: osx
+language: swift
+
 branches:
   only: 
     - master
 stages:
   - lint
-  - compile
+  - swiftpm
+  - carthage
   - test
 jobs:
   include:
@@ -11,11 +15,8 @@ jobs:
       stage: lint
       osx_image: xcode8.3
       env: SWIFT=3.1
-      name: pod lib lint --swift-version=3.1
-      os: osx
-      language: objective-c
       before_install:
-        gem install cocoapods --prerelease --version 1.6.0.beta.1
+        gem install cocoapods --prerelease --version 1.7.0.beta.3
       install:
         carthage bootstrap --no-build PromiseKit
       script: |
@@ -27,30 +28,27 @@ jobs:
     - <<: *pod
       osx_image: xcode9.2
       env: SWIFT=3.2
-      name: pod lib lint --swift-version=3.2
     - <<: *pod
       osx_image: xcode9.4
       env: SWIFT=3.3
-      name: pod lib lint --swift-version=3.3
-    - <<: *pod
-      osx_image: xcode10
-      env: SWIFT=3.4
-      name: pod lib lint --swift-version=3.4
+    # - <<: *pod
+    #   osx_image: xcode10
+    #   env: SWIFT=3.4
     - <<: *pod
       osx_image: xcode9.2
       env: SWIFT=4.0
-      name: pod lib lint --swift-version=4.0
     - <<: *pod
       osx_image: xcode9.4
       env: SWIFT=4.1
-      name: pod lib lint --swift-version=4.1
     - <<: *pod
       osx_image: xcode10
       env: SWIFT=4.2
-      name: pod lib lint --swift-version=4.2
+    - <<: *pod
+      osx_image: xcode10.2
+      env: SWIFT=5.0
 
     - &linux
-      stage: compile
+      stage: swiftpm
       env: SWIFT_BUILD_VERSION=3  SWIFT_VERSION=4.0
       # ^^ we have some source-conditionals for this version
       name: Linux / Swift 3.2.0
@@ -85,11 +83,11 @@ jobs:
       env: SWIFT_BUILD_VERSION=4  SWIFT_VERSION=4.2
       name: Linux / Swift 4.2
     - <<: *linux
-      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.0-DEVELOPMENT-SNAPSHOT-2019-01-22-a
-      name: Linux / Swift 5.0 (2019-01-22)
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.0
+      name: Linux / Swift 5.0
 
     - &swiftpm
-      stage: compile
+      stage: swiftpm
       name: Xcode 8.3 / SwiftPM
       os: osx
       osx_image: xcode8.3
@@ -101,28 +99,37 @@ jobs:
     - <<: *swiftpm
       name: Xcode 10.0 / SwiftPM
       osx_image: xcode10
-
-    - &test
-      stage: test
-      osx_image: xcode10
-      name: macOS Tests
-      env: DST='arch=x86_64' PLAT=macOS
-      os: osx
-      language: objective-c
+    
+    - &carthage
+      stage: carthage
+      osx_image: xcode9.2
+      script: |
+        carthage bootstrap --cache-builds
+        carthage build --no-skip-current
       cache:
         directories:
         - Carthage
-      before_install:
-        carthage bootstrap --cache-builds --no-use-binaries --platform $PLAT
-      install:
-        xcodebuild -scheme PMKFoundation -target PMKFoundation -quiet -destination "$DST" SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
-      script:
-        xcodebuild -scheme PMKFoundation -quiet -destination "$DST" test
+    - <<: *carthage
+      osx_image: xcode9.4
+    - <<: *carthage
+      osx_image: xcode10.1
+    - <<: *carthage
+      osx_image: xcode10.2
+
+    - &test
+      stage: test
+      xcode_scheme: PMKFoundation
+      xcode_project: PMKFoundation.xcodeproj
+      xcode_destination: 'platform=macOS'
+      cache:
+        directories:
+        - Carthage
+      before_install: |
+        carthage bootstrap --cache-builds --no-use-binaries
+        sed -i '' "s/SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;/SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;/" *.xcodeproj/project.pbxproj
       after_success:
         bash <(curl -s https://codecov.io/bash);
     - <<: *test
-      env: DST='OS=12.0,name=iPhone SE' PLAT=iOS
-      name: iOS Tests
+      xcode_destination: 'platform=iOS Simulator,OS=12.0,name=iPhone SE'
     - <<: *test
-      env: DST='OS=12.0,name=Apple TV' PLAT=tvOS
-      name: tvOS Tests
+      xcode_destination: 'platform=Apple TV Simulator,OS=12.0,name=Apple TV'
