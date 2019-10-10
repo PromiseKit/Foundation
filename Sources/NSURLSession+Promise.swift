@@ -1,4 +1,7 @@
 import Foundation
+#if os(Linux)
+import FoundationNetworking
+#endif
 #if !PMKCocoaPods
 import PromiseKit
 #endif
