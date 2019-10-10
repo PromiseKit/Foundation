@@ -17,7 +17,7 @@ jobs:
       osx_image: xcode8.3
       env: SWIFT=3.1
       before_install:
-        gem install cocoapods --prerelease --version 1.7.0.beta.3
+        gem install cocoapods --version '~> 1.8.0'
       install:
         carthage bootstrap --no-build PromiseKit
       script: |
@@ -47,7 +47,10 @@ jobs:
     - <<: *pod
       osx_image: xcode10.2
       env: SWIFT=5.0
-
+    - <<: *pod
+      osx_image: xcode11
+      env: SWIFT=5.1
+      
     - &linux
       stage: swiftpm
       env: SWIFT_BUILD_VERSION=3  SWIFT_VERSION=4.0
@@ -86,7 +89,10 @@ jobs:
     - <<: *linux
       env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.0
       name: Linux / Swift 5.0
-
+    - <<: *linux
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.1
+      name: Linux / Swift 5.1
+      
     - &swiftpm
       stage: swiftpm
       name: Xcode 8.3 / SwiftPM
@@ -100,7 +106,10 @@ jobs:
     - <<: *swiftpm
       name: Xcode 10.0 / SwiftPM
       osx_image: xcode10
-    
+    - <<: *swiftpm
+      name: Xcode 11.0 / SwiftPM
+      osx_image: xcode11
+
     - &carthage
       stage: carthage
       osx_image: xcode9.2
@@ -117,7 +126,9 @@ jobs:
       osx_image: xcode10.1
     - <<: *carthage
       osx_image: xcode10.2
-
+    - <<: *carthage
+      osx_image: xcode11
+      
     - &test
       stage: test
       xcode_scheme: PMKFoundation
