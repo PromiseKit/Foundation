@@ -5,7 +5,7 @@ import PromiseKit
 
 /**
  - Returns: A promise that resolves when the provided object deallocates
- - Important: The promise is not guarenteed to resolve immediately when the provided object is deallocated. So you cannot write code that depends on exact timing.
+ - Important: The promise is not guaranteed to resolve immediately when the provided object is deallocated. So you cannot write code that depends on exact timing.
  */
 public func after(life object: NSObject) -> Guarantee<Void> {
     var reaper = objc_getAssociatedObject(object, &handle) as? GrimReaper
