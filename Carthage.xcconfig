@@ -1,7 +1,10 @@
 //  Created by Kevin Ballard on 12/14/15.
 //  Copyright © 2015 Postmates. All rights reserved.
 
-FRAMEWORK_SEARCH_PATHS[sdk=macosx*] = $(SRCROOT)/Carthage/Build/Mac/ $(SRCROOT)/Carthage/Build/** $(inherited)
-FRAMEWORK_SEARCH_PATHS[sdk=iphone*] = $(SRCROOT)/Carthage/Build/iOS/ $(SRCROOT)/Carthage/Build/** $(inherited)
-FRAMEWORK_SEARCH_PATHS[sdk=watch*] = $(SRCROOT)/Carthage/Build/watchOS/ $(SRCROOT)/Carthage/Build/** $(inherited)
-FRAMEWORK_SEARCH_PATHS[sdk=appletv*] = $(SRCROOT)/Carthage/Build/tvOS/ $(SRCROOT)/Carthage/Build/** $(inherited)
+FRAMEWORK_SEARCH_PATHS[sdk=macosx*] = $(SRCROOT)/Carthage/Build/Mac/ $(SRCROOT)/Carthage/Build/PromiseKit.xcframework/macos-arm64_x86_64/ $(inherited)
+FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*] = $(SRCROOT)/Carthage/Build/iOS/ $(SRCROOT)/Carthage/Build/PromiseKit.xcframework/ios-arm64/ $(inherited)
+FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*] = $(SRCROOT)/Carthage/Build/iOS/ $(SRCROOT)/Carthage/Build/PromiseKit.xcframework/ios-arm64_x86_64-simulator/ $(inherited)
+FRAMEWORK_SEARCH_PATHS[sdk=watchos*] = $(SRCROOT)/Carthage/Build/watchOS/ $(SRCROOT)/Carthage/Build/PromiseKit.xcframework/watchos-arm64_32_armv7k/ $(inherited)
+FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*] = $(SRCROOT)/Carthage/Build/watchOS/ $(SRCROOT)/Carthage/Build/PromiseKit.xcframework/watchos-arm64_i386_x86_64-simulator/ $(inherited)
+FRAMEWORK_SEARCH_PATHS[sdk=appletvos*] = $(SRCROOT)/Carthage/Build/tvOS/ $(SRCROOT)/Carthage/Build/PromiseKit.xcframework/tvos-arm64/ $(inherited)
+FRAMEWORK_SEARCH_PATHS[sdk=appletvsimulator*] = $(SRCROOT)/Carthage/Build/tvOS/ $(SRCROOT)/Carthage/Build/PromiseKit.xcframework/tvos-arm64_x86_64-simulator/ $(inherited)
