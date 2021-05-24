@@ -101,15 +101,6 @@ jobs:
     - <<: *linux
       env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.1
       name: Linux / Swift 5.1
-    - <<: *linux
-      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.2
-      name: Linux / Swift 5.2
-    - <<: *linux
-      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.3
-      name: Linux / Swift 5.3
-    - <<: *linux
-      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.4
-      name: Linux / Swift 5.4
 
     - &swiftpm
       stage: swiftpm
