@@ -50,6 +50,15 @@ jobs:
     - <<: *pod
       osx_image: xcode11
       env: SWIFT=5.1
+    - <<: *pod
+      oss_image: xcode11.7
+      env: SWIFT=5.2
+    - <<: *pod
+      oss_image: xcode12
+      env: SWIFT=5.3
+    - <<: *pod
+      oss_image: xcode12.5
+      env: SWIFT=5.4
       
     - &linux
       stage: swiftpm
@@ -92,7 +101,16 @@ jobs:
     - <<: *linux
       env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.1
       name: Linux / Swift 5.1
-      
+    - <<: *linux
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.2
+      name: Linux / Swift 5.2
+    - <<: *linux
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.3
+      name: Linux / Swift 5.3
+    - <<: *linux
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.4
+      name: Linux / Swift 5.4
+
     - &swiftpm
       stage: swiftpm
       name: Xcode 8.3 / SwiftPM
@@ -128,6 +146,8 @@ jobs:
       osx_image: xcode10.2
     - <<: *carthage
       osx_image: xcode11
+    - <<: *carthage
+      osx_image: xcode12
       
     - &test
       stage: test
