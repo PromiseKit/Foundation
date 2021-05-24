@@ -51,14 +51,8 @@ jobs:
       osx_image: xcode11
       env: SWIFT=5.1
     - <<: *pod
-      oss_image: xcode11.7
-      env: SWIFT=5.2
-    - <<: *pod
       oss_image: xcode12
       env: SWIFT=5.3
-    - <<: *pod
-      oss_image: xcode12.5
-      env: SWIFT=5.4
       
     - &linux
       stage: swiftpm
@@ -118,6 +112,9 @@ jobs:
     - <<: *swiftpm
       name: Xcode 11.0 / SwiftPM
       osx_image: xcode11
+    - <<: *swiftpm
+      name: Xcode 12.0 / SwiftPM
+      osx_image: xcode12
 
     - &carthage
       stage: carthage
