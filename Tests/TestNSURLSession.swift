@@ -62,7 +62,9 @@ class NSURLSessionTests: XCTestCase {
 
         after(.milliseconds(100)).then {
             URLSession.shared.dataTask(.promise, with: rq)
-        }.map(String.init).done {
+        }.map {
+          String(data: $0.data, encoding: .utf8)
+        }.done {
             XCTAssertEqual($0, dummy)
             ex.fulfill()
         }
