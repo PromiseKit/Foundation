@@ -1,0 +1,83 @@
+name: CI
+on: pull_request
+
+jobs:
+
+  linux-3:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        swift:
+        - 4.0.0
+        - 4.0.3
+        - 4.1.2
+        - 4.2.4
+        - 5.0.3
+        - 5.1.5
+        - 5.2.5
+        - 5.3.3
+        - 5.4.0
+    container:
+      image: swift:${{ matrix.swift }}
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        if [[ ${v:1} == '4' ]]; then
+          echo "VERSIONS=3 4" >> "$GITHUB_ENV"
+        else
+          echo "VERSIONS=4 4.2 5" >> "$GITHUB_ENV"
+        fi
+      env:
+        v: ${{ matrix.swift }}
+    - run: |
+        for v in $VERSIONS; do
+          swift build -Xswiftc -swift-version -Xswiftc $v
+        done
+
+  swiftpm:
+    runs-on: macos-10.15
+    strategy:
+      matrix:
+        xcode: [^9, ^10, ^11, ^12]
+    steps:
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ matrix.xcode }}
+    - uses: actions/checkout@v2
+    - run: swift build
+
+  carthage:
+    runs-on: macos-10.15
+    strategy:
+      matrix:
+        xcode: [^9, ^10, ^11, ^12]
+    steps:
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ matrix.xcode }}
+    - uses: actions/checkout@v2
+    - run: sed -i '' "s/SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;/SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;/" *.xcodeproj/project.pbxproj
+    - run: |
+        if [[ ${{ martix.xcode }} == '^12' ]]; then
+          echo "CARTHAGE_ARGS=--use-xcframeworks" >> "$GITHUB_ENV"
+        fi
+    - run: carthage build --no-skip-current $CARTHAGE_ARGS
+
+  test:
+    runs-on: macos-10.15
+    strategy:
+      matrix:
+        dst:
+        - platform=macOS
+        - platform=tvOS Simulator,OS=14.3,name=Apple TV
+        - platform=iOS Simulator,OS=14.4,name=iPhone 12
+    steps:
+    - uses: actions/checkout@v2
+    - uses: sersoft-gmbh/xcodebuild-action@v1
+      with:
+        project: PMKFoundation.xcodeproj
+        scheme: PMKFoundation
+        destination: ${{ matrix.dst }}
+        action: test
+        enable-code-coverage: true
+    - uses: codecov/codecov-action@v1
