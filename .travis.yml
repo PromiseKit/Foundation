@@ -2,9 +2,8 @@ os: osx
 language: swift
 osx_image: xcode10.2
 
-branches:
-  only: 
-    - master
+if: type = pull_request
+
 stages:
   - lint
   - swiftpm
@@ -14,50 +13,28 @@ jobs:
   include:
     - &pod
       stage: lint
-      osx_image: xcode8.3
-      env: SWIFT=3.1
+      osx_image: xcode10.3
       before_install:
-        gem install cocoapods --version '~> 1.8.0'
+        gem install cocoapods --version '~> 1.10.1'
       install:
         carthage bootstrap --no-build PromiseKit
       script: |
         cd Carthage/Checkouts/PromiseKit
-        mv .github/PromiseKit.podspec .
         rm -rf Extensions/Foundation/Sources
         cp -R ../../../Sources Extensions/Foundation
-        pod lib lint --subspec=PromiseKit/Foundation --fail-fast --swift-version=$SWIFT
+        pod lib lint --subspec=PromiseKit/Foundation --fail-fast
     - <<: *pod
-      osx_image: xcode9.2
-      env: SWIFT=3.2
+      osx_image: xcode11.6
     - <<: *pod
-      osx_image: xcode9.4
-      env: SWIFT=3.3
-    - <<: *pod
-      osx_image: xcode10.1
-      env: SWIFT=3.4
-    - <<: *pod
-      osx_image: xcode9.2
-      env: SWIFT=4.0
-    - <<: *pod
-      osx_image: xcode9.4
-      env: SWIFT=4.1
-    - <<: *pod
-      osx_image: xcode10.1
-      env: SWIFT=4.2
-    - <<: *pod
-      osx_image: xcode10.2
-      env: SWIFT=5.0
-    - <<: *pod
-      osx_image: xcode11
-      env: SWIFT=5.1
-      
+      osx_image: xcode12.5
+
     - &linux
       stage: swiftpm
       env: SWIFT_BUILD_VERSION=3  SWIFT_VERSION=4.0
       # ^^ we have some source-conditionals for this version
       name: Linux / Swift 3.2.0
       os: linux
-      dist: trusty
+      dist: bionic
       sudo: required
       language: generic
       before_install:
@@ -71,7 +48,7 @@ jobs:
       env: SWIFT_BUILD_VERSION=3  SWIFT_VERSION=4.1.2
       name: Linux / Swift 3.3
     - <<: *linux
-      env: SWIFT_BUILD_VERSION=3  SWIFT_VERSION=4.2
+      env: SWIFT_BUILD_VERSION=3  SWIFT_VERSION=4.2.4
       name: Linux / Swift 3.4
     - <<: *linux
       env: SWIFT_BUILD_VERSION=4  SWIFT_VERSION=4.0
@@ -82,53 +59,56 @@ jobs:
       name: Linux / Swift 4.0.3
     - <<: *linux
       env: SWIFT_BUILD_VERSION=4  SWIFT_VERSION=4.1.2
-      name: Linux / Swift 4.1
+      name: Linux / Swift 4.1.2
     - <<: *linux
-      env: SWIFT_BUILD_VERSION=4  SWIFT_VERSION=4.2
-      name: Linux / Swift 4.2
+      env: SWIFT_BUILD_VERSION=4  SWIFT_VERSION=4.2.4
+      name: Linux / Swift 4.2.4
     - <<: *linux
-      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.0
-      name: Linux / Swift 5.0
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.0.3
+      name: Linux / Swift 5.0.3
     - <<: *linux
-      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.1
-      name: Linux / Swift 5.1
-      
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.1.5
+      name: Linux / Swift 5.1.5
+    - <<: *linux
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.2.5
+      name: Linux / Swift 5.2.5
+    - <<: *linux
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.3.3
+      name: Linux / Swift 5.3.3
+    - <<: *linux
+      env: SWIFT_BUILD_VERSION=5 SWIFT_VERSION=5.4
+      name: Linux / Swift 5.4.0
+
     - &swiftpm
       stage: swiftpm
-      name: Xcode 8.3 / SwiftPM
       os: osx
-      osx_image: xcode8.3
+      osx_image: xcode9.4
       language: objective-c
       script: swift build
     - <<: *swiftpm
-      name: Xcode 9.4 / SwiftPM
-      osx_image: xcode9.4
+      osx_image: xcode10.3
     - <<: *swiftpm
-      name: Xcode 10.0 / SwiftPM
-      osx_image: xcode10
+      osx_image: xcode11.6
     - <<: *swiftpm
-      name: Xcode 11.0 / SwiftPM
-      osx_image: xcode11
+      osx_image: xcode12.5
 
     - &carthage
       stage: carthage
-      osx_image: xcode9.2
-      script: |
-        carthage bootstrap --cache-builds
-        sed -i '' "s/SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;/SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;/" *.xcodeproj/project.pbxproj
-        carthage build --no-skip-current
+      osx_image: xcode9.4
+      before_install: carthage bootstrap --cache-builds
+      install: sed -i '' "s/SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;/SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;/" *.xcodeproj/project.pbxproj
+      script: carthage build --no-skip-current
       cache:
         directories:
         - Carthage
     - <<: *carthage
-      osx_image: xcode9.4
+      osx_image: xcode10.3
     - <<: *carthage
-      osx_image: xcode10.1
+      osx_image: xcode11.6
     - <<: *carthage
-      osx_image: xcode10.2
-    - <<: *carthage
-      osx_image: xcode11
-      
+      osx_image: xcode12.5
+      script: carthage build --no-skip-current --use-xcframeworks
+
     - &test
       stage: test
       xcode_scheme: PMKFoundation
