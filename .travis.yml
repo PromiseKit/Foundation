@@ -53,6 +53,9 @@ jobs:
     - <<: *pod
       oss_image: xcode12
       env: SWIFT=5.3
+    - <<: *pod
+      oss_image: xcode12.5
+      env: SWIFT=5.4
       
     - &linux
       stage: swiftpm
