@@ -2,8 +2,7 @@
 
 This project adds promises to the Swift Foundation framework.
 
-We support iOS, tvOS, watchOS, macOS and Linux, Swift 3.0, 3.1, 3.2, 4.0, 4.1,
-4.2 and 5.0.
+We support iOS, tvOS, watchOS, macOS and Linux, Swift 3.2 and above.
 
 ## CococaPods
 

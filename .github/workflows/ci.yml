@@ -3,14 +3,13 @@ on: pull_request
 
 jobs:
 
-  linux-3:
+  linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         swift:
-        - 4.0.0
         - 4.0.3
-        - 4.1.2
+        - 4.1.3
         - 4.2.4
         - 5.0.3
         - 5.1.5
@@ -22,23 +21,24 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: |
-        if [[ ${v:1} == '4' ]]; then
-          echo "VERSIONS=3 4" >> "$GITHUB_ENV"
+        if [ ${v:0:1} == 4 ]; then
+          echo "VERSIONS=3 4" >> $GITHUB_ENV
         else
-          echo "VERSIONS=4 4.2 5" >> "$GITHUB_ENV"
+          echo "VERSIONS=4 4.2 5" >> $GITHUB_ENV
         fi
+      shell: bash
       env:
         v: ${{ matrix.swift }}
     - run: |
         for v in $VERSIONS; do
-          swift build -Xswiftc -swift-version -Xswiftc $v
+          swift build -Xswiftc -warnings-as-errors -Xswiftc -swift-version -Xswiftc $v
         done
 
-  swiftpm:
+  macOS:
     runs-on: macos-10.15
     strategy:
       matrix:
-        xcode: [^9, ^10, ^11, ^12]
+        xcode: [^10, ^11, ^12]
     steps:
     - uses: maxim-lobanov/setup-xcode@v1
       with:
@@ -50,18 +50,23 @@ jobs:
     runs-on: macos-10.15
     strategy:
       matrix:
-        xcode: [^9, ^10, ^11, ^12]
+        xcode: [^10, ^11, ^12]
     steps:
     - uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: ${{ matrix.xcode }}
     - uses: actions/checkout@v2
-    - run: sed -i '' "s/SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;/SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;/" *.xcodeproj/project.pbxproj
+    - uses: mingjun97/file-regex-replace@v1
+      with:
+        regex: SWIFT_TREAT_WARNINGS_AS_ERRORS = NO
+        replacement: SWIFT_TREAT_WARNINGS_AS_ERRORS = YES
+        include: project.pbxproj
     - run: |
-        if [[ ${{ martix.xcode }} == '^12' ]]; then
-          echo "CARTHAGE_ARGS=--use-xcframeworks" >> "$GITHUB_ENV"
+        if [ ${{ matrix.xcode }} == ^12 ]; then
+          echo "CARTHAGE_ARGS=--use-xcframeworks" >> $GITHUB_ENV
         fi
-    - run: carthage build --no-skip-current $CARTHAGE_ARGS
+    - run: carthage bootstrap --no-use-binaries $CARTHAGE_ARGS
+    - run: carthage build --no-skip-current --no-use-binaries $CARTHAGE_ARGS
 
   test:
     runs-on: macos-10.15
@@ -69,10 +74,14 @@ jobs:
       matrix:
         dst:
         - platform=macOS
-        - platform=tvOS Simulator,OS=14.3,name=Apple TV
-        - platform=iOS Simulator,OS=14.4,name=iPhone 12
+        - platform=tvOS Simulator,OS=13.4,name=Apple TV
+        - platform=iOS Simulator,OS=13.7,name=iPhone 11
     steps:
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ^11  # 11 as Xcode 12 forces xcframeworks and we dunno how to handle that yet
     - uses: actions/checkout@v2
+    - run: carthage bootstrap --no-use-binaries
     - uses: sersoft-gmbh/xcodebuild-action@v1
       with:
         project: PMKFoundation.xcodeproj
