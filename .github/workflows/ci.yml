@@ -75,7 +75,7 @@ jobs:
         dst:
         - platform=macOS
         - platform=tvOS Simulator,OS=12.4,name=Apple TV
-        - platform=iOS Simulator,OS=12.7,name=iPhone 11
+        - platform=iOS Simulator,OS=12.4,name=iPhone SE
     steps:
     - uses: maxim-lobanov/setup-xcode@v1
       with:
