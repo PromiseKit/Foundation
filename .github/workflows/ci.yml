@@ -89,4 +89,5 @@ jobs:
         destination: ${{ matrix.dst }}
         action: test
         enable-code-coverage: true
+        use-xcpretty: false
     - uses: codecov/codecov-action@v1
