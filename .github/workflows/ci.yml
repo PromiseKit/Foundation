@@ -74,12 +74,12 @@ jobs:
       matrix:
         dst:
         - platform=macOS
-        - platform=tvOS Simulator,OS=13.4,name=Apple TV
-        - platform=iOS Simulator,OS=13.7,name=iPhone 11
+        - platform=tvOS Simulator,OS=12.4,name=Apple TV
+        - platform=iOS Simulator,OS=12.7,name=iPhone 11
     steps:
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: ^11  # 11 as Xcode 12 forces xcframeworks and we dunno how to handle that yet
+        xcode-version: ^10  # 10 as Xcode 11 & 12 forces xcframeworks and we dunno how to handle that yet
     - uses: actions/checkout@v2
     - run: carthage bootstrap --no-use-binaries
     - uses: sersoft-gmbh/xcodebuild-action@v1
