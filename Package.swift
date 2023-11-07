@@ -3,7 +3,7 @@ import PackageDescription
 let package = Package(
     name: "PMKFoundation",
     dependencies: [
-        .Package(url: "https://github.com/mxcl/PromiseKit.git", majorVersion: 6)
+        .Package(url: "https://github.com/mxcl/PromiseKit.git", majorVersion: 8)
     ],
     swiftLanguageVersions: [3, 4],
     exclude: [
